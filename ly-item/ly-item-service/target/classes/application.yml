@@ -17,3 +17,16 @@ eureka:
   instance:
     prefer-ip-address: true
     ip-address: 127.0.0.1
+
+logging:
+  level:
+    com.leyou: debug
+
+
+mybatis:
+  mapper-locations: classpath:mappers/**/*.xml    #扫描classpath下mapper目录下的所有.xml文件
+  type-aliases-package: com.leyou.pojo #实体类的包路径
+  configuration:
+    map-underscore-to-camel-case: true
+
+
