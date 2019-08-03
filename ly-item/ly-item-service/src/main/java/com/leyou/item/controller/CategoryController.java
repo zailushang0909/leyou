@@ -1,5 +1,6 @@
 package com.leyou.item.controller;
 
+import com.leyou.pojo.BrandDTO;
 import com.leyou.pojo.CategoryDTO;
 import com.leyou.item.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,4 +25,8 @@ public class CategoryController {
         return ResponseEntity.status(200).body(categoryDTOS);
     }
 
+    @GetMapping("/of/brand")
+    public ResponseEntity<List<CategoryDTO>> getCategoryById(@RequestParam("id") Long id) {
+        return ResponseEntity.ok(categoryService.getCategoryById(id));
+    }
 }

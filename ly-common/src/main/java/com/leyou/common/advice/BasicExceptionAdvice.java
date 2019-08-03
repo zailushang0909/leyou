@@ -16,6 +16,7 @@ public class BasicExceptionAdvice {
         return ResponseEntity.status(400).body(e.getMessage());
     }
 
+
     @ExceptionHandler(LyException.class)
     public ResponseEntity<ExceptionResult> handleLyException(LyException e) {
         return ResponseEntity.status(e.getStatus()).body(new ExceptionResult(e));

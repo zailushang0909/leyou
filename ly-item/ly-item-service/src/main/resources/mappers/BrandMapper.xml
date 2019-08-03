@@ -11,4 +11,31 @@
             (#{cid},#{bid})
         </foreach>
     </insert>
+    <delete id="deleteCategoryAndBrandByBid">
+        delete from tb_category_brand where brand_id=#{bid}
+    </delete>
+    <delete id="deleteCategoryAndBrandByBidAndCids">
+        delete from tb_category_brand where brand_id=#{bid} and (
+        <foreach collection="cids" item="cid" separator="or">
+            category_id=#{cid}
+        </foreach>
+        )
+    </delete>
+    <select id="queryCategoryIdsByBrandId" resultType="java.lang.Long">
+        select tb_category_brand.category_id from tb_category_brand where brand_id=#{bid}
+    </select>
+    <select id="querySkuCountByCategoryIdsAndBrandId" resultType="java.lang.Long">
+
+        <foreach collection="cids" separator="union all" item="cid">
+            select count(*) from tb_spu where brand_id=#{bid} and cid3=#{cid}
+        </foreach>
+
+    </select>
+    <select id="queryBrandsByCid" resultType="com.leyou.item.entity.Brand">
+        select b.id , b.name from tb_brand b
+        inner join
+        tb_category_brand cb
+        on b.id = cb.brand_id
+        where cb.category_id=#{cid}
+    </select>
 </mapper>

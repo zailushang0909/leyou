@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leyou.item.mapper.CategoryMapper">
+
+    <select id="selectCategorysByBrandId" resultType="com.leyou.item.entity.Category" parameterType="map">
+        select c.* from tb_category c inner join tb_category_brand cb on c.id=cb.category_id where cb.brand_id = #{bid}
+    </select>
+</mapper>
