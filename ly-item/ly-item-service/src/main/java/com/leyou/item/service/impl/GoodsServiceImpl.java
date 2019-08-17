@@ -2,6 +2,7 @@ package com.leyou.item.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.leyou.common.constants.MQConstants;
 import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exception.LyException;
 import com.leyou.common.pojo.PageResult;
@@ -19,6 +20,7 @@ import com.leyou.pojo.SkuDTO;
 import com.leyou.pojo.SpuDTO;
 import com.leyou.pojo.SpuDetailDTO;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,10 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.leyou.common.constants.MQConstants.Exchange.ITEM_EXCHANGE_NAME;
+import static com.leyou.common.constants.MQConstants.RoutingKey.ITEM_DOWN_KEY;
+import static com.leyou.common.constants.MQConstants.RoutingKey.ITEM_UP_KEY;
 
 @Service
 public class GoodsServiceImpl implements GoodsService {
@@ -41,6 +47,8 @@ public class GoodsServiceImpl implements GoodsService {
     private SpuDetailMapper spuDetailMapper;
     @Autowired
     private SkuMapper skuMapper;
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     @Override
     public PageResult<SpuDTO> querySpusPage(String key, Boolean saleable, Integer page, Integer rows) {
@@ -70,7 +78,7 @@ public class GoodsServiceImpl implements GoodsService {
         List<SpuDTO> spuDTOS = BeanHelper.copyWithCollection(spus, SpuDTO.class);
         spuDTOS.forEach(spuDTO -> {
             List<Long> cids = spuDTO.getCids();
-            String catgoryName = categoryService.getCategorysNameByCids(cids).stream()
+            String catgoryName = categoryService.getCategorysByCids(cids).stream()
                     .map(category -> category.getName())
                     .collect(Collectors.joining("/"));
             spuDTO.setCategoryName(catgoryName);
@@ -105,7 +113,8 @@ public class GoodsServiceImpl implements GoodsService {
         if (count!=skus.size()) {
             throw new LyException(ExceptionEnum.FAIL_INSERT);
         }
-
+        //TODO 发送  insert routingkey 以及 spuid 给消息中间件
+        amqpTemplate.convertAndSend(ITEM_EXCHANGE_NAME,ITEM_UP_KEY,spuDTO.getId());
     }
 
     @Override
@@ -205,5 +214,36 @@ public class GoodsServiceImpl implements GoodsService {
         if (total!=count) {
             throw new LyException(ExceptionEnum.UPDATE_FAIL);
         }
+
+        //TODO 发送  insert routingkey 以及 spuid 给消息中间件
+        amqpTemplate.convertAndSend(ITEM_EXCHANGE_NAME,saleable ? ITEM_UP_KEY:ITEM_DOWN_KEY,spuId);
+    }
+
+    @Override
+    public SpuDTO querySpuById(Long spuId) {
+        Spu spu = spuMapper.selectByPrimaryKey(spuId);
+        if (spu==null) {
+            throw new LyException(ExceptionEnum.OPTIONS_NOT_EXIST);
+        }
+        SpuDetail spuDetail = spuDetailMapper.selectByPrimaryKey(spu.getId());
+
+        SpuDTO spuDTO = BeanHelper.copyProperties(spu, SpuDTO.class);
+        spuDTO.setSpuDetail(BeanHelper.copyProperties(spuDetail,SpuDetailDTO.class));
+
+        Sku sku = new Sku();
+        sku.setSpuId(spu.getId());
+        List<Sku> skus = skuMapper.select(sku);
+        spuDTO.setSkus(BeanHelper.copyWithCollection(skus, SkuDTO.class));
+
+        return spuDTO;
+    }
+
+    @Override
+    public List<SkuDTO> querySkusByIds(List<Long> ids) {
+        List<Sku> skus = this.skuMapper.selectByIdList(ids);
+        if (CollectionUtils.isEmpty(skus)) {
+            throw new LyException(ExceptionEnum.OPTIONS_NOT_EXIST);
+        }
+        return BeanHelper.copyWithCollection(skus, SkuDTO.class);
     }
 }

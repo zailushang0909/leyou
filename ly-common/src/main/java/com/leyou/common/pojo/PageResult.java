@@ -15,5 +15,11 @@ public class PageResult<T> {
      * this.totalBrands = resp.data.total;
      */
     private Long total;
+    private Integer totalPage;
     private List<T> items;
+
+    public PageResult(Long total,List<T> items) {
+        this.total = total;
+        this.items = items;
+    }
 }

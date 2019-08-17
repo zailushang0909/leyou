@@ -2,6 +2,8 @@ package com.leyou.pojo;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class SpuDetailDTO {
     private Long spuId;// 对应的SPU的id

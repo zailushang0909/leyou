@@ -1,0 +1,52 @@
+server:
+  port: 8087
+spring:
+  application:
+    name: auth-service
+  redis:
+    password: 041801slQQ
+    host: r-bp17p9jz962ps2lc10pd.redis.rds.aliyuncs.com
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/leyou
+    password: root
+    username: root
+    driver-class-name: com.mysql.jdbc.Driver
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:10086/eureka
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    lease-renewal-interval-in-seconds: 5
+
+ly:
+  jwt:
+    privateFilePath: E:/rsa/id_rsa
+    publicFilePath: E:/rsa/id_rsa.pub
+    user:
+      expire: 30 # 过期时间,单位分钟
+      cookieName: LY_TOKEN # cookie名称
+      cookieDomain: leyou.com # cookie的域
+    app:
+      id: 8 #微服务id
+      secret: ${spring.application.name} #微服务密码
+      expire: 1500 #微服务Jwt Token 过期时间 单位时间为分钟
+      headName: appToken
+
+  encoder:
+    bcrpt:
+      secret: ${random.uuid}
+      strength: 10
+
+mybatis:
+  mapper-locations: classpath:mappers/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+  type-aliases-package: com.leyou.auth.entity
+
+logging:
+  level:
+    com.leyou: debug

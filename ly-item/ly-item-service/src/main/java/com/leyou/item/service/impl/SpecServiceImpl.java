@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class SpecServiceImpl implements SpecService {
@@ -37,7 +39,7 @@ public class SpecServiceImpl implements SpecService {
     }
 
     @Override
-    public List<SpecParamDTO> querySpecsByGid(Long gid, Long cid) {
+    public List<SpecParamDTO> querySpecsByid(Long gid, Long cid, Boolean searching) {
 
         if ((gid==null && cid==null)||(gid!=null && cid!=null)) {
             throw new LyException(ExceptionEnum.PARAM_ERROR);
@@ -45,11 +47,27 @@ public class SpecServiceImpl implements SpecService {
         SpecParam specParam = new SpecParam();
         specParam.setCid(cid);
         specParam.setGroupId(gid);
+        specParam.setSearching(searching);
         List<SpecParam> specParams = this.specParamMapper.select(specParam);
         if (CollectionUtils.isEmpty(specParams)) {
             throw new LyException(ExceptionEnum.OPTIONS_NOT_EXIST);
         }
         return BeanHelper.copyWithCollection(specParams,SpecParamDTO.class);
 
+    }
+
+    @Override
+    public List<SpecGroupDTO> querySepcGroupsAndSpecsByCid(Long cid) {
+        List<SpecGroupDTO> specGroupDTOS = querySepcGroupsByCid(cid);
+        if (CollectionUtils.isEmpty(specGroupDTOS)) {
+            throw new LyException(ExceptionEnum.OPTIONS_NOT_EXIST);
+        }
+        List<SpecParamDTO> specParamDTOS = querySpecsByid(null, cid, null);
+        if (CollectionUtils.isEmpty(specParamDTOS)) {
+            throw new LyException(ExceptionEnum.OPTIONS_NOT_EXIST);
+        }
+        Map<Long, List<SpecParamDTO>> collect = specParamDTOS.stream().collect(Collectors.groupingBy(SpecParamDTO::getGroupId));
+        specGroupDTOS.forEach(specGroupDTO -> specGroupDTO.setParams(collect.get(specGroupDTO.getId())));
+        return specGroupDTOS;
     }
 }

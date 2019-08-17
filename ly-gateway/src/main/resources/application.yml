@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: api-gateway
+  redis:
+    host: r-bp17p9jz962ps2lc10pd.redis.rds.aliyuncs.com
+    password: 041801slQQ
 
 eureka:
   client:
@@ -20,6 +23,16 @@ zuul:
   routes:
     item-service: /item/**
     upload-service: /upload/**
+    search-service: /search/**
+    page-service: /page/**
+    user-service: /user/**
+    auth-service: /auth/**
+    cart-service:
+      serviceId: cart-service
+      path: /cart/**
+      stripPrefix: false
+
+  sensitive-headers:
 
 
 hystrix:
@@ -28,7 +41,7 @@ hystrix:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 6000 # 熔断超时时长：6000ms
+            timeoutInMilliseconds: 12000 # 熔断超时时长：6000ms
 
 ribbon:
   ConnectTimeout: 500 # ribbon链接超时时长
@@ -41,6 +54,7 @@ ly:
   cors:
     allowedOrigins:
       - http://manage.leyou.com
+      - http://www.leyou.com
     allowCredentials: true
     allowedHeaders:
       - "*"
@@ -53,3 +67,24 @@ ly:
       - HEAD
     maxAge: 3600
     filterPath: "/**"
+  jwt:
+    publicFilePath: E:/rsa/id_rsa.pub
+    user:
+      expire: 30 # 过期时间,单位分钟
+      cookieName: LY_TOKEN # cookie名称
+      cookieDomain: leyou.com # cookie的域
+    app:
+      id: 7 #微服务id
+      secret: ${spring.application.name} #微服务密码
+      expire: 1500 #微服务Jwt Token 过期时间 单位时间为分钟
+      headName: appToken
+
+  filter:
+    allowPaths:
+      - /api/auth/login
+      - /api/search
+      - /api/user/register
+      - /api/user/check
+      - /api/user/code
+      - /api/item
+

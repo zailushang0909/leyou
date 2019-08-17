@@ -52,4 +52,9 @@ public class BrandController {
         return ResponseEntity.ok(this.brandService.queryBrandsByCid(cid));
     }
 
+    @GetMapping("of/ids")
+    public ResponseEntity<List<BrandDTO>> queryBrandsByBids(@RequestParam("bids") List<Long> bids) {
+        return ResponseEntity.ok(this.brandService.queryBrandsByBids(bids));
+    }
+
 }

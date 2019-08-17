@@ -23,8 +23,15 @@ public enum ExceptionEnum {
     TYPE_NOT_ALLOW(400,"图片类型不允许"),
     NOT_ONE_PICTURE(400,"不是图片"),
     FILE_READ_FAIL(500,"图片读取失败"),
-    COMMON_FAIL(500,"未知错误"),
-    PARAM_ERROR(400,"参数错误")
+    COMMON_FAIL(500,"服务器内部错误"),
+    PARAM_ERROR(400,"参数错误"),
+    DIRECTORY_WRITER_ERROR(500,"路径创建失败"),
+    FILE_WRITER_ERROR(500,"静态页生成失败"),
+    SEND_MESSAGE_ERROR(500,"发送短信失败"),
+    VERIFY_CODE_FAIL(400,"验证码已过期或者验证码错误"),
+    LOGIN_FAIL(400,"用户名或者密码有误"),
+    LOAD_PRIVATEKEY_FAIL(500,"加载密钥失败"),
+    INVALID_TOKEN(401,"token无效")
     ;
 
     private int status;

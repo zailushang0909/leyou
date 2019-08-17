@@ -1,0 +1,52 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: user-service
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://127.0.0.1:3306/leyou
+  redis:
+    host: r-bp17p9jz962ps2lc10pd.redis.rds.aliyuncs.com
+    password: 041801slQQ
+  rabbitmq:
+    virtual-host: /leyou
+    username: leyou
+    password: leyou
+    host: 106.15.232.107
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+    registry-fetch-interval-seconds: 5
+
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    lease-renewal-interval-in-seconds: 5
+
+mybatis:
+  mapper-locations: classpath:mappers/**/*.xml
+  type-aliases-package: com.leyou.pojo
+  configuration:
+    map-underscore-to-camel-case: true
+
+ly:
+  encoder:
+    crypt:
+      secret: ${random.uuid} # 随机的密钥，使用uuid
+      strength: 10 # 加密强度4~31，决定了密码和盐加密时的运算次数，超过10以后加密耗时会显著增加
+  jwt:
+    publicFilePath: E:/rsa/id_rsa.pub
+    app:
+      id: 1 #微服务id
+      secret: ${spring.application.name} #微服务密码
+      expire: 1500 #微服务Jwt Token 过期时间 单位时间为分钟
+      headName: appToken
+
+
+
+

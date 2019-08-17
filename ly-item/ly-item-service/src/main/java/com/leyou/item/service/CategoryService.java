@@ -10,5 +10,6 @@ public interface CategoryService {
 
     List<CategoryDTO> getCategoryById(Long id);
 
-    List<CategoryDTO> getCategorysNameByCids(List<Long> cids);
+    List<CategoryDTO> getCategorysByCids(List<Long> cids);
+
 }

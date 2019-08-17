@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -21,6 +22,7 @@ public class SpuDTO {
     private String brandName;
     private List<SkuDTO> skus;
     private SpuDetailDTO spuDetail;
+    private Date createTime;
 
     @JsonIgnore
     public List<Long> getCids() {

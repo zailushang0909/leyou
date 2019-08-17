@@ -13,7 +13,7 @@ public class BasicExceptionAdvice {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleException(RuntimeException e) {
-        return ResponseEntity.status(400).body(e.getMessage());
+        return ResponseEntity.status(500).body(e.getMessage());
     }
 
 

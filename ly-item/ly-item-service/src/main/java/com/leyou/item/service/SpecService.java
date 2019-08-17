@@ -8,5 +8,7 @@ import java.util.List;
 public interface SpecService {
     List<SpecGroupDTO> querySepcGroupsByCid(Long cid);
 
-    List<SpecParamDTO> querySpecsByGid(Long gid, Long cid);
+    List<SpecParamDTO> querySpecsByid(Long gid, Long cid, Boolean searching);
+
+    List<SpecGroupDTO> querySepcGroupsAndSpecsByCid(Long cid);
 }

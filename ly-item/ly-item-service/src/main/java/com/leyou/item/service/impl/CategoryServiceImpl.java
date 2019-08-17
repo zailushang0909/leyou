@@ -42,11 +42,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDTO> getCategorysNameByCids(List<Long> cids) {
+    public List<CategoryDTO> getCategorysByCids(List<Long> cids) {
         List<Category> categories = categoryMapper.selectByIdList(cids);
         if (CollectionUtils.isEmpty(categories)) {
             throw new LyException(ExceptionEnum.OPTIONS_NOT_EXIST);
         }
         return BeanHelper.copyWithCollection(categories,CategoryDTO.class);
     }
+
 }

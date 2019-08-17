@@ -1,0 +1,38 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: sms-service
+
+  rabbitmq:
+    host: 106.15.232.107
+    port: 5672
+    username: leyou
+    password: leyou
+    virtual-host: /leyou
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    lease-renewal-interval-in-seconds: 5
+
+logging:
+  level:
+    com.leyou: debug
+
+ly:
+  sms:
+    accessKeyID: LTAIfW2ysJIK7LTl # 你自己的accessKeyId
+    accessKeySecret: X4Lm0qq1tftMdNRnD8QWiKusSWejkg # 你自己的AccessKeySecret
+    signName: 乐忧伤城 # 签名名称
+    verifyCodeTemplate: SMS_172207430 # 模板名称
+    domain: dysmsapi.aliyuncs.com # 域名
+    action: SendSMS # API类型，发送短信
+    version: 2017-05-25 # API版本，固定值
+    regionID: cn-hangzhou # 区域id

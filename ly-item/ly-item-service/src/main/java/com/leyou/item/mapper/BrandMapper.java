@@ -2,11 +2,12 @@ package com.leyou.item.mapper;
 
 import com.leyou.item.entity.Brand;
 import org.apache.ibatis.annotations.Param;
+import tk.mybatis.mapper.additional.idlist.SelectByIdListMapper;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
-public interface BrandMapper extends Mapper<Brand> {
+public interface BrandMapper extends Mapper<Brand>, SelectByIdListMapper<Brand,Long> {
     int insertCategoryAndBrand(@Param("bid") Long id, @Param("cids") List<Long> cids);
 
     int deleteCategoryAndBrandByBid(@Param("bid") Long bid);

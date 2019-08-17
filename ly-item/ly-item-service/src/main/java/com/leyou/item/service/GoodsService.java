@@ -19,4 +19,8 @@ public interface GoodsService {
     void updateGoods(SpuDTO spuDTO);
 
     void updateSaleable(Long spuId, Boolean saleable);
+
+    SpuDTO querySpuById(Long spuId);
+
+    List<SkuDTO> querySkusByIds(List<Long> ids);
 }

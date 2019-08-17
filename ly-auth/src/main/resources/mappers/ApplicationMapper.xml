@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leyou.auth.mapper.ApplicationMapper">
+
+    <select id="selectTargetIdsById" resultType="java.lang.Long">
+        select target_id from tb_application_privilege where service_id = #{appId}
+    </select>
+</mapper>

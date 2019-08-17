@@ -9,6 +9,19 @@ spring:
     url: jdbc:mysql://localhost:3306/leyou
     username: root
     password: root
+  rabbitmq:
+    host: 106.15.232.107
+    port: 5672
+    username: leyou
+    password: leyou
+    virtual-host: /leyou
+    template:
+      retry:
+        enabled: true
+        initial-interval: 10000ms
+        max-interval: 80000ms
+        multiplier: 2
+    publisher-confirms: true
 
 eureka:
   client:
@@ -33,5 +46,7 @@ mybatis:
 
 mapper:
   wrap-keyword: "`{0}`"
+
+
 
 

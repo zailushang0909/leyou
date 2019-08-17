@@ -163,4 +163,16 @@ public class BrandServiceImpl implements BrandService {
         return BeanHelper.copyWithCollection(brands, BrandDTO.class);
     }
 
+    @Override
+    public List<BrandDTO> queryBrandsByBids(List<Long> bids) {
+        if (CollectionUtils.isEmpty(bids)) {
+            throw new LyException(ExceptionEnum.OPTIONS_NOT_EXIST);
+        }
+        List<Brand> brands = brandMapper.selectByIdList(bids);
+        if (CollectionUtils.isEmpty(brands)) {
+            throw new LyException(ExceptionEnum.OPTIONS_NOT_EXIST);
+        }
+        return BeanHelper.copyWithCollection(brands, BrandDTO.class);
+    }
+
 }

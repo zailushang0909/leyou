@@ -29,4 +29,9 @@ public class CategoryController {
     public ResponseEntity<List<CategoryDTO>> getCategoryById(@RequestParam("id") Long id) {
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
+
+    @GetMapping("of/ids")
+    public ResponseEntity<List<CategoryDTO>> getCategorysByIds(@RequestParam("ids") List<Long> ids) {
+        return ResponseEntity.ok(categoryService.getCategorysByCids(ids));
+    }
 }
