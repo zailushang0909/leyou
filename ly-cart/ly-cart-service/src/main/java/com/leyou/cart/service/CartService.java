@@ -10,4 +10,8 @@ public interface CartService {
     List<Cart> queryCartsByUid();
 
     void incrNum(Long id, Integer num);
+
+    void deleteCartByskuId(String skuId);
+
+    void mergeCarts(List<Cart> carts);
 }

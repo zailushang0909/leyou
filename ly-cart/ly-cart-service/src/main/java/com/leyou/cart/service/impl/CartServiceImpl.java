@@ -10,11 +10,11 @@ import com.leyou.common.exception.LyException;
 import com.leyou.common.utils.JsonUtils;
 import com.leyou.item.client.ItemClient;
 import com.leyou.pojo.SkuDTO;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -50,7 +50,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Autowired
-    private ItemClient itemClientm;
+    private ItemClient itemClient;
 
     @Override
     public List<Cart> queryCartsByUid() {
@@ -66,7 +66,7 @@ public class CartServiceImpl implements CartService {
         //获取skuIdList
         List<Long> skuIds = cartsMap.keySet().stream().map(Long::new).collect(Collectors.toList());
         //查询skuList
-        List<SkuDTO> skus = itemClientm.querySkusByIds(skuIds);
+        List<SkuDTO> skus = itemClient.querySkusByIds(skuIds);
         //遍历skuList集合封装Cart对象 收集成list集合
         List<Cart> carts = skus.stream()
                 .map(skuDTO -> {
@@ -82,6 +82,39 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void incrNum(Long id, Integer num) {
-        //从redis
+        //从redis中查询当前用户购物车
+        String key = CART_PREFIX+userHolder.getTl().get().getId();
+        BoundHashOperations<String, String, String> hashOps = redisTemplate.boundHashOps(key);
+        if (!hashOps.hasKey(id.toString())) {
+            throw new LyException(ExceptionEnum.PARAM_ERROR);
+        }
+        Cart cart = JsonUtils.nativeRead(hashOps.get(id.toString()), new TypeReference<Cart>() {
+        });
+        if (cart == null) {
+            throw new LyException(ExceptionEnum.PARAM_ERROR);
+        }
+        //将购物车中sku num 数量修改
+        cart.setNum(num);
+        //将修改后的数据写会redis
+        hashOps.put(id.toString(),JsonUtils.toString(cart));
     }
+
+    @Override
+    public void deleteCartByskuId(String skuId) {
+        String key = CART_PREFIX + userHolder.getTl().get().getId();
+        BoundHashOperations<String, String, Cart> hashOps = redisTemplate.boundHashOps(key);
+        Long count = hashOps.delete(skuId);
+        if (count!=1) {
+            throw new LyException(ExceptionEnum.DELETE_FAIL);
+        }
+    }
+
+    @Override
+    public void mergeCarts(List<Cart> carts) {
+        if (CollectionUtils.isEmpty(carts)) {
+            throw new LyException(ExceptionEnum.PARAM_ERROR);
+        }
+        carts.forEach(this::addCart);
+    }
+
 }

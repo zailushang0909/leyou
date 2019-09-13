@@ -30,4 +30,16 @@ public class CartController {
         this.cartService.incrNum(id,num);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("cart/{skuId}")
+    public ResponseEntity<Void> deleteCartByskuId(@PathVariable("skuId") String skuId) {
+        this.cartService.deleteCartByskuId(skuId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("cart/list")
+    public ResponseEntity<Void> mergeCarts(@RequestBody List<Cart> carts) {
+        this.cartService.mergeCarts(carts);
+        return ResponseEntity.ok().build();
+    }
 }

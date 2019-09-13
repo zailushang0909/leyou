@@ -47,6 +47,10 @@ mybatis:
 mapper:
   wrap-keyword: "`{0}`"
 
+lcc:
+  manager:
+    url: http://127.0.0.1:8899/tx/manager
+
 
 
 

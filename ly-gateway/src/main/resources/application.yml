@@ -31,6 +31,10 @@ zuul:
       serviceId: cart-service
       path: /cart/**
       stripPrefix: false
+    order-service:
+      serviceId: order-service
+      path: /order/**
+      stripPrefix: false
 
   sensitive-headers:
 
